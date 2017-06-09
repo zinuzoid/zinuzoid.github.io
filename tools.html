@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title></title>
+    <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/cupertino/jquery-ui.css">
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/URI.js/1.18.1/URI.min.js"></script>
+    <script type="text/javascript">
+			$(document).ready(function () {
+				$('#parseButton').click(parser.parse);
+			});
+
+			var parser = {
+
+				parse: function () {
+
+					var s = $("#inputString").val();
+					var uri = new URI(s).duplicateQueryParameters(true);
+
+					$("#scheme").text(uri.scheme());
+					$("#protocol").text(uri.protocol());
+					$("#hostname").text(uri.hostname());
+
+					if (uri.directory()) {
+						$("#directory").text(uri.directory());
+						$("#directory").parent().show();
+					} else {
+						$("#directory").parent().hide();
+					}
+
+					if (uri.resource()) {
+						$("#resource").text(uri.resource());
+						$("#resource").parent().show();
+					} else {
+						$("#resource").parent().hide();
+					}
+
+					if (uri.host()) {
+						$("#host").text(uri.host());
+						$("#host").parent().show();
+					} else {
+						$("#host").parent().hide();
+					}
+
+					if (uri.userinfo()) {
+						$("#userinfo").text(uri.userinfo());
+						$("#userinfo").parent().show();
+					} else {
+						$("#userinfo").parent().hide();
+					}
+
+					if (uri.authority()) {
+						$("#authority").text(uri.authority());
+						$("#authority").parent().show();
+					} else {
+						$("#authority").parent().hide();
+					}
+
+					if (uri.username()) {
+						$("#username").text(uri.username());
+						$("#username").parent().show();
+					} else {
+						$("#username").parent().hide();
+					}
+
+					if (uri.password()) {
+						$("#password").text(uri.password());
+						$("#password").parent().show();
+					} else {
+						$("#password").parent().hide();
+					}
+
+					if (uri.port()) {
+						$("#port").text(uri.port());
+						$("#port").parent().show();
+					} else {
+						$("#port").parent().hide();
+					}
+
+					if (uri.subdomain()) {
+						$("#subdomain").text(uri.subdomain());
+						$("#subdomain").parent().show();
+					} else {
+						$("#subdomain").parent().hide();
+					}
+
+					if (uri.domain()) {
+						$("#domain").text(uri.domain());
+						$("#domain").parent().show();
+					} else {
+						$("#domain").parent().hide();
+					}
+
+					if (uri.tld()) {
+						$("#tld").text(uri.tld());
+						$("#tld").parent().show();
+					} else {
+						$("#tld").parent().hide();
+					}
+
+					if (uri.path()) {
+						$("#path").text(uri.path());
+						$("#path").parent().show();
+					} else {
+						$("#path").parent().hide();
+					}
+
+					if (uri.filename()) {
+						$("#filename").text(uri.filename());
+						$("#filename").parent().show();
+					} else {
+						$("#filename").parent().hide();
+					}
+
+					if (uri.suffix()) {
+						$("#filesuffix").text(uri.suffix());
+						$("#filesuffix").parent().show();
+					} else {
+						$("#filesuffix").parent().hide();
+					}
+
+					if (uri.query()) {
+						$("#query").text(uri.query());
+						$("#query").parent().show();
+					} else {
+						$("#query").parent().hide();
+					}
+
+					if (uri.hash()) {
+						$("#hash").text(uri.hash());
+						$("#hash").parent().show();
+					} else {
+						$("#hash").parent().hide();
+					}
+
+					var content = "";
+					$.each(uri.query(true), function (i, n) {
+
+						if ($.isArray(n)) {
+
+							var key = $('<div/>').text(i).html();
+							for (var j = 0; j < n.length; j++) {
+								var value = $('<div/>').text(n[j]).html();
+								content += '<tr><td class="p"><span class="sp">\'' + key + '\'[' + j + ']:<span></td><td class="v">' + value + '</td></tr>';
+							}
+
+						} else {
+
+							var key = $('<div/>').text(i).html();
+							var value = $('<div/>').text(n).html();
+							content += '<tr><td class="p"><span class="sp">\'' + key + '\':<span></td><td class="v">' + value + '</td></tr>';
+
+						}
+
+					});
+
+					$("#queryString").html(content);
+
+					if (content != "") {
+						$("#queryStringWrapper").show();
+					} else {
+						$("#queryStringWrapper").hide();
+					}
+
+					$("#result").show();
+
+				}
+
+			};
+
+    </script>
+    <style type="text/css">
+        .t {
+            font-weight: bold;
+            width: 150px;
+            background-color: #DDD;
+        }
+
+        .p {
+            font-weight: bold;
+            width: 150px;
+            background-color: #DDD;
+        }
+
+        .v {
+            word-wrap: break-word;
+            width: 500px;
+            display: block;
+        }
+
+        .sp {
+            word-wrap: break-word;
+            width: 150px;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+<div class="container-fluid">
+    <div class="content">
+        <div class="content-inner">
+            <div id="url query parser">
+                <h2>URL query parser</h2>
+                <div class="form-wrapper">
+                    <form id="form" enctype="multipart/form-data" method="post" action="/">
+                        <div class="title first"><span class="option">Copy-paste your URL here</span></div>
+                        <input type="text" id="inputString" name="inputString" style="height:18px;"/>
+                        <div class="buttons">
+                            <button class="btn primary" id="parseButton"
+                                    title="Parse the URL and split the query string" onclick="return false;">PARSE
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div id="result" style="display:none;">
+                    <h2>URL Parts</h2>
+                    <table>
+                        <tr>
+                            <td class="t">Scheme:</td>
+                            <td id="scheme" class="v"></td>
+                        </tr>
+                        <tr>
+                            <td class="t">Protocol:</td>
+                            <td id="protocol" class="v"></td>
+                        </tr>
+                        <tr>
+                            <td class="t">Userinfo:</td>
+                            <td id="userinfo" class="v"></td>
+                        </tr>
+                        <tr>
+                            <td class="t">Username:</td>
+                            <td id="username" class="v"></td>
+                        </tr>
+                        <tr>
+                            <td class="t">Password:</td>
+                            <td id="password" class="v"></td>
+                        </tr>
+                        <tr>
+                            <td class="t">Authority:</td>
+                            <td id="authority" class="v"></td>
+                        </tr>
+                        <tr>
+                            <td class="t">Host:</td>
+                            <td id="host" class="v"></td>
+                        </tr>
+                        <tr>
+                            <td class="t">Hostname:</td>
+                            <td id="hostname" class="v"></td>
+                        </tr>
+                        <tr>
+                            <td class="t">Port:</td>
+                            <td id="port" class="v"></td>
+                        </tr>
+                        <tr>
+                            <td class="t">Subdomain:</td>
+                            <td id="subdomain" class="v"></td>
+                        </tr>
+                        <tr>
+                            <td class="t">Domain:</td>
+                            <td id="domain" class="v"></td>
+                        </tr>
+                        <tr>
+                            <td class="t">Tld:</td>
+                            <td id="tld" class="v"></td>
+                        </tr>
+                        <tr>
+                            <td class="t">Resource:</td>
+                            <td id="resource" class="v"></td>
+                        </tr>
+                        <tr>
+                            <td class="t">Directory:</td>
+                            <td id="directory" class="v"></td>
+                        </tr>
+                        <tr>
+                            <td class="t">Path:</td>
+                            <td id="path" class="v"></td>
+                        </tr>
+                        <tr>
+                            <td class="t">File name:</td>
+                            <td id="filename" class="v"></td>
+                        </tr>
+                        <tr>
+                            <td class="t">File suffix:</td>
+                            <td id="filesuffix" class="v"></td>
+                        </tr>
+                        <tr>
+                            <td class="t">Query string:</td>
+                            <td id="query" class="v"></td>
+                        </tr>
+                        <tr>
+                            <td class="t">Hash:</td>
+                            <td id="hash" class="v"></td>
+                        </tr>
+                    </table>
+                    <div id="queryStringWrapper">
+                        <h2>Query String Splitter</h2>
+                        <table id="queryString">
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
