@@ -7,6 +7,8 @@
     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/URI.js/1.18.1/URI.min.js"></script>
+
+    <!-- url query -->
     <script type="text/javascript">
 			$(document).ready(function () {
 				$('#parseButton').click(parser.parse);
@@ -171,6 +173,129 @@
 			};
 
     </script>
+
+    <!-- base64 -->
+    <script type="text/javascript" language="javascript">
+			<!--
+			var b64array = "ABCDEFGHIJKLMNOP" +
+				"QRSTUVWXYZabcdef" +
+				"ghijklmnopqrstuv" +
+				"wxyz0123456789+/" +
+				"=";
+
+			function encodePlain() {
+				input = $("#plain").val();
+				var base64 = "";
+				var hex = "";
+				var chr1, chr2, chr3 = "";
+				var enc1, enc2, enc3, enc4 = "";
+				var i = 0;
+
+				do {
+					chr1 = input.charCodeAt(i++);
+					chr2 = input.charCodeAt(i++);
+					chr3 = input.charCodeAt(i++);
+
+					enc1 = chr1 >> 2;
+					enc2 = ((chr1 & 3) << 4) | (chr2 >> 4);
+					enc3 = ((chr2 & 15) << 2) | (chr3 >> 6);
+					enc4 = chr3 & 63;
+
+					if (isNaN(chr2)) {
+						enc3 = enc4 = 64;
+					} else if (isNaN(chr3)) {
+						enc4 = 64;
+					}
+
+					base64 = base64 +
+						b64array.charAt(enc1) +
+						b64array.charAt(enc2) +
+						b64array.charAt(enc3) +
+						b64array.charAt(enc4);
+					chr1 = chr2 = chr3 = "";
+					enc1 = enc2 = enc3 = enc4 = "";
+				} while (i < input.length);
+
+				$("#base64").val(base64);
+
+				encodeHex();
+				encodeImage();
+			}
+
+			function decode64() {
+				var input = $("#base64").val();
+				var output = "";
+				var hex = "";
+				var chr1, chr2, chr3 = "";
+				var enc1, enc2, enc3, enc4 = "";
+				var i = 0;
+
+				var base64test = /[^A-Za-z0-9\+\/\=]/g;
+				if (base64test.exec(input)) {
+					$("#message").html("There were invalid base64 characters in the input text.\n" +
+						"Valid base64 characters are A-Z, a-z, 0-9, '+', '/',and '='\n" +
+						"Expect errors in decoding.");
+				} else {
+					$("#message").html("");
+				}
+				input = input.replace(/[^A-Za-z0-9\+\/\=]/g, "");
+
+				do {
+					enc1 = b64array.indexOf(input.charAt(i++));
+					enc2 = b64array.indexOf(input.charAt(i++));
+					enc3 = b64array.indexOf(input.charAt(i++));
+					enc4 = b64array.indexOf(input.charAt(i++));
+
+					chr1 = (enc1 << 2) | (enc2 >> 4);
+					chr2 = ((enc2 & 15) << 4) | (enc3 >> 2);
+					chr3 = ((enc3 & 3) << 6) | enc4;
+
+					output = output + String.fromCharCode(chr1);
+
+					if (enc3 != 64) {
+						output = output + String.fromCharCode(chr2);
+					}
+					if (enc4 != 64) {
+						output = output + String.fromCharCode(chr3);
+					}
+
+					chr1 = chr2 = chr3 = "";
+					enc1 = enc2 = enc3 = enc4 = "";
+
+				} while (i < input.length);
+
+				$("#plain").val(unescape(output));
+				encodeHex();
+				encodeImage();
+			}
+
+			function encodeHex() {
+				var hex = "";
+				var input = $("#plain").val();
+				for (i = 0; i < input.length; i++)
+					hex += '%' + input.charCodeAt(i).toString(16);
+
+				$("#hex").val(hex);
+			}
+
+			function encodeImage() {
+				var src = "data:image;base64,";
+				src = src + $("#base64").val();
+				$("#b64_img").attr("src", src);
+			}
+
+			function showImage() {
+				$("#as_image").dialog();
+			}
+
+			$(document).ready(function () {
+				$("#plain").bind("keyup", encodePlain);
+				$("#base64").bind("keyup", decode64);
+				$("#as_image_link").bind("click", showImage);
+			});
+			//-->
+    </script>
+
     <style type="text/css">
         .t {
             font-weight: bold;
@@ -201,7 +326,7 @@
 <div class="container-fluid">
     <div class="content">
         <div class="content-inner">
-            <div id="url query parser">
+            <div id="url_query_parser">
                 <h2>URL query parser</h2>
                 <div class="form-wrapper">
                     <form id="form" enctype="multipart/form-data" method="post" action="/">
@@ -300,6 +425,29 @@
                         <table id="queryString">
                         </table>
                     </div>
+                </div>
+            </div>
+            <hr/>
+            <div id="base64_parser">
+                <h2>Base64 Parser</h2>
+                <p>
+                    Base64 (automatically decoded)<br/>
+                    <textarea id="base64" rows="3" style="width: 700px;"></textarea>
+
+                <p>
+                    ASCII Plain Text (automatically encoded)<br/>
+                    <textarea id="plain" rows="3" style="width: 700px;"></textarea>
+
+                <p>
+                    Hex<br/>
+                    <textarea id="hex" rows="3" style="width: 700px;" readonly></textarea>
+
+                <p>
+                    Options<br/>
+                    <a id="as_image_link" href="#">Decode as Image</a>
+
+                <div id="as_image" style="display:none;" title="Decoded as Image (IE not supported)">
+                    <img id="b64_img"/>
                 </div>
             </div>
         </div>
