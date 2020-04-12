@@ -1,0 +1,22 @@
+{
+  "files": {
+    "main.css": "/condor/static/css/main.0e96c88f.chunk.css",
+    "main.js": "/condor/static/js/main.8bc272e8.chunk.js",
+    "main.js.map": "/condor/static/js/main.8bc272e8.chunk.js.map",
+    "runtime-main.js": "/condor/static/js/runtime-main.9a2c944c.js",
+    "runtime-main.js.map": "/condor/static/js/runtime-main.9a2c944c.js.map",
+    "static/js/2.93d74882.chunk.js": "/condor/static/js/2.93d74882.chunk.js",
+    "static/js/2.93d74882.chunk.js.map": "/condor/static/js/2.93d74882.chunk.js.map",
+    "index.html": "/condor/index.html",
+    "precache-manifest.a947949edd70dfdd3a911ab0fa992885.js": "/condor/precache-manifest.a947949edd70dfdd3a911ab0fa992885.js",
+    "service-worker.js": "/condor/service-worker.js",
+    "static/css/main.0e96c88f.chunk.css.map": "/condor/static/css/main.0e96c88f.chunk.css.map",
+    "static/js/2.93d74882.chunk.js.LICENSE.txt": "/condor/static/js/2.93d74882.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.9a2c944c.js",
+    "static/js/2.93d74882.chunk.js",
+    "static/css/main.0e96c88f.chunk.css",
+    "static/js/main.8bc272e8.chunk.js"
+  ]
+}
