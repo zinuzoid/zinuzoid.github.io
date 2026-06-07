@@ -93,7 +93,7 @@
       </div>
       <div class="field" style="margin-top:16px">
         <label for="lp">Lead-out (leading) points</label>
-        <input type="number" id="lp" min="0" step="1" value="50" />
+        <input type="number" id="lp" min="0" step="1" value="100" />
       </div>
 
       <h2 style="margin-top:6px">Result at slider position</h2>
@@ -168,7 +168,7 @@ function buildChart(){
         annotation:false},
       scales:{
         x:{title:{display:true,text:'Arrival height above goal (m AGL)'},grid:{color:'#eef1f4'}},
-        yF:{position:'left',min:0.78,max:1.005,title:{display:true,text:'Goal altitude factor'},
+        yF:{position:'left',min:0.8,max:1.005,title:{display:true,text:'Goal altitude factor'},
           grid:{color:'#eef1f4'},ticks:{callback:v=>v.toFixed(2)}},
         yP:{position:'right',min:0,title:{display:true,text:'Total points'},grid:{drawOnChartArea:false}},
       }}
