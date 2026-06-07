@@ -172,9 +172,9 @@ function buildChart(){
         annotation:false},
       scales:{
         x:{title:{display:true,text:'Arrival height above goal (m AGL)'},grid:{color:'#eef1f4'}},
-        yF:{position:'left',min:0.8,max:1.005,title:{display:true,text:'Goal altitude factor'},
-          grid:{color:'#eef1f4'},ticks:{callback:v=>v.toFixed(2)}},
-        yP:{position:'right',min:0,title:{display:true,text:'Total points'},grid:{drawOnChartArea:false}},
+        yF:{position:'left',min:0.8,max:1.005,title:{display:true,text:'Goal altitude factor',color:'#1d6fa5'},
+          grid:{color:'#eef1f4'},ticks:{color:'#1d6fa5',callback:v=>v.toFixed(2)}},
+        yP:{position:'right',min:0,title:{display:true,text:'Total points',color:'#0f6e56'},ticks:{color:'#0f6e56'},grid:{drawOnChartArea:false}},
       }}
   });
 }
@@ -236,10 +236,27 @@ if(copyBtn) copyBtn.addEventListener('click',()=>{
   else{const ta=document.createElement('textarea');ta.value=url;document.body.appendChild(ta);ta.select();try{document.execCommand('copy');}catch(e){}ta.remove();done();}
 });
 
+let gaTimer;
+function trackSlider(){
+  clearTimeout(gaTimer);
+  gaTimer=setTimeout(()=>{
+    if(typeof gtag==='function'){
+      const E=Math.max(1,+elev.value), a=+arr.value;
+      gtag('event','slider_move',{
+        event_category:'engagement',
+        arrival_height:a,
+        goal_elevation:E,
+        altitude_factor:+factor(a,E).toFixed(3)
+      });
+    }
+  },600);
+}
+
 Chart.register(markerPlugin);
 applyFromURL();
 buildChart(); update();
 arr.addEventListener('input',update);
+arr.addEventListener('input',trackSlider);
 [tp,dp,lp].forEach(el=>el.addEventListener('input',update));
 elev.addEventListener('input',rebuild);
 </script>
