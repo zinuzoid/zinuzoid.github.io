@@ -98,12 +98,12 @@
 
       <h2 style="margin-top:6px">Result at slider position</h2>
       <div class="results">
+        <div class="stat full"><div class="k">Total task points</div><div class="v" id="rTotal">—</div></div>
         <div class="stat"><div class="k">Goal altitude factor</div><div class="v" id="rFactor">—</div></div>
         <div class="stat"><div class="k">Adjusted time points</div><div class="v" id="rTime">—</div></div>
         <div class="stat pen"><div class="k">Time-point penalty</div><div class="v" id="rPen">—</div></div>
         <div class="stat pen"><div class="k">Penalty % of overall task pts</div><div class="v" id="rPenPct">—</div></div>
         <div class="stat"><div class="k">Dist + lead (unchanged)</div><div class="v" id="rOther">—</div></div>
-        <div class="stat full"><div class="k">Total task points</div><div class="v" id="rTotal">—</div></div>
       </div>
     </div>
 
@@ -202,10 +202,37 @@ function update(){
   $('rTotal').textContent=r1(adj+other).toFixed(1);
   window.__markX=a;
   if(chart)chart.draw();
+  syncURL();
 }
 function rebuild(){ if(chart)chart.destroy(); buildChart(); update(); }
 
+const PARAMS=['elev','tp','dp','lp','arr'];
+function applyFromURL(){
+  const p=new URLSearchParams(location.search);
+  ['elev','tp','dp','lp'].forEach(k=>{ if(p.has(k)&&p.get(k)!=='') $(k).value=p.get(k); });
+  if(p.has('elev')) arr.max=Math.max(1,+elev.value);
+  if(p.has('arr')&&p.get('arr')!=='') arr.value=p.get('arr');
+}
+let urlTimer;
+function syncURL(){
+  clearTimeout(urlTimer);
+  urlTimer=setTimeout(()=>{
+    const p=new URLSearchParams();
+    PARAMS.forEach(k=>p.set(k,$(k).value));
+    history.replaceState(null,'','?'+p.toString());
+  },150);
+}
+
+const copyBtn=$('copyLink');
+if(copyBtn) copyBtn.addEventListener('click',()=>{
+  const url=location.href;
+  const done=()=>{const t=copyBtn.textContent;copyBtn.textContent='Link copied!';setTimeout(()=>copyBtn.textContent=t,1500);};
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(url).then(done).catch(done);}
+  else{const ta=document.createElement('textarea');ta.value=url;document.body.appendChild(ta);ta.select();try{document.execCommand('copy');}catch(e){}ta.remove();done();}
+});
+
 Chart.register(markerPlugin);
+applyFromURL();
 buildChart(); update();
 arr.addEventListener('input',update);
 [tp,dp,lp].forEach(el=>el.addEventListener('input',update));
