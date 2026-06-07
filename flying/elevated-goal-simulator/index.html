@@ -161,7 +161,7 @@ function buildChart(){
     type:'line',
     data:{labels,datasets:[
       {label:'Goal altitude factor',data:fData,yAxisID:'yF',borderColor:'#1d6fa5',
-       backgroundColor:'rgba(29,111,165,.08)',borderWidth:2,pointRadius:0,tension:0,fill:true},
+       backgroundColor:'rgba(29,111,165,.08)',borderWidth:2,pointRadius:0,tension:0,fill:true,clip:false},
       {label:'Total task points',data:pData,yAxisID:'yP',borderColor:'#0f6e56',
        borderWidth:2,pointRadius:0,tension:0,borderDash:[6,4]},
     ]},
@@ -172,7 +172,7 @@ function buildChart(){
         annotation:false},
       scales:{
         x:{title:{display:true,text:'Arrival height above goal (m AGL)'},grid:{color:'#eef1f4'}},
-        yF:{position:'left',min:0.8,max:1.005,title:{display:true,text:'Goal altitude factor',color:'#1d6fa5'},
+        yF:{position:'left',min:0.8,max:1.0,title:{display:true,text:'Goal altitude factor',color:'#1d6fa5'},
           grid:{color:'#eef1f4'},ticks:{color:'#1d6fa5',callback:v=>v.toFixed(2)}},
         yP:{position:'right',min:0,title:{display:true,text:'Total points',color:'#0f6e56'},ticks:{color:'#0f6e56'},grid:{drawOnChartArea:false}},
       }}
