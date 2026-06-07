@@ -78,35 +78,35 @@
       </div>
 
       <div class="field">
-        <label for="elev">E-Goal height — required elevation above goal (AGL)</label>
+        <label for="elev">E-Goal height (AGL)</label>
         <div style="display:flex;align-items:center;gap:8px;">
           <input type="number" id="elev" min="1" step="10" value="200" style="flex:1;" />
           <span style="color:var(--muted);font-size:14px;">m</span>
         </div>
       </div>
 
-      <div class="toprow">
-        <div class="field" style="margin-bottom:0">
+      <div class="field" style="margin-bottom:0">
           <label for="tp">Time points</label>
           <input type="number" id="tp" min="0" step="1" value="400" />
-        </div>
-        <div class="field" style="margin-bottom:0">
+      </div>
+      <div class="toprow">
+        <div class="field" style="margin-top:16px">
           <label for="dp">Distance points</label>
           <input type="number" id="dp" min="0" step="1" value="300" />
         </div>
-      </div>
-      <div class="field" style="margin-top:16px">
-        <label for="lp">Lead-out (leading) points</label>
-        <input type="number" id="lp" min="0" step="1" value="100" />
+        <div class="field" style="margin-top:16px">
+          <label for="lp">Lead-out points</label>
+          <input type="number" id="lp" min="0" step="1" value="100" />
+        </div>
       </div>
 
       <h2 style="margin-top:6px">Result at slider position</h2>
       <div class="results">
-        <div class="stat full"><div class="k">Total task points</div><div class="v" id="rTotal">—</div></div>
-        <div class="stat"><div class="k">Goal altitude factor</div><div class="v" id="rFactor">—</div></div>
-        <div class="stat"><div class="k">Adjusted time points</div><div class="v" id="rTime">—</div></div>
+        <div class="stat full"><div class="k">Total task points</div><div class="v" id="rTotal">—</div><div style="font-size:12px;color:var(--muted);margin-top:2px;">before goal-altitude penalty: <span id="rTotalMax" style="font-weight:600;">—</span></div></div>
         <div class="stat pen"><div class="k">Time-point penalty</div><div class="v" id="rPen">—</div></div>
         <div class="stat pen"><div class="k">Penalty % of overall task pts</div><div class="v" id="rPenPct">—</div></div>
+        <div class="stat"><div class="k">Goal altitude factor</div><div class="v" id="rFactor">—</div></div>
+        <div class="stat"><div class="k">Adjusted time points</div><div class="v" id="rTime">—</div></div>
         <div class="stat"><div class="k">Dist + lead (unchanged)</div><div class="v" id="rOther">—</div></div>
       </div>
     </div>
@@ -204,6 +204,7 @@ function update(){
   $('rPenPct').textContent='−'+penPct.toFixed(2)+'%';
   $('rOther').textContent=r1(other).toFixed(0);
   $('rTotal').textContent=r1(adj+other).toFixed(1);
+  $('rTotalMax').textContent=r1(fullTotal).toFixed(1);
   window.__markX=a;
   if(chart)chart.draw();
   syncURL();
