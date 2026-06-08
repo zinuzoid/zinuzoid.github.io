@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-SKSR9SNP82"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-SKSR9SNP82');
+</script>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Elevated Goal — Speed to Goal Simulator</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg" />
+<style>
+  :root{
+    --bg:#f5f6f8; --card:#ffffff; --ink:#1c2530; --muted:#5f6b7a;
+    --line:#e2e6ec; --accent:#1d6fa5; --accent2:#0f6e56; --warn:#c0563a;
+    --shadow:0 1px 3px rgba(20,30,45,.08),0 8px 24px rgba(20,30,45,.06);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.5;padding:24px;}
+  .wrap{max-width:1180px;margin:0 auto;}
+  h1{font-size:22px;font-weight:600;margin:0 0 4px;display:flex;align-items:center;gap:10px;}
+  .sub{color:var(--muted);font-size:14px;margin:0 0 20px;}
+  .sub a{color:var(--accent);font-weight:500;}
+  .grid{display:grid;grid-template-columns:380px 1fr;gap:20px;align-items:start;}
+  @media (max-width:900px){.grid{grid-template-columns:1fr;}}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;
+    padding:18px;box-shadow:var(--shadow);}
+  .card h2{font-size:13px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);
+    margin:0 0 14px;font-weight:600;}
+  label{display:block;font-size:13px;color:var(--muted);margin:0 0 5px;}
+  .field{margin-bottom:14px;}
+  input[type=number]{width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:9px;
+    font-size:15px;color:var(--ink);background:#fff;}
+  input[type=number]:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(29,111,165,.12);}
+  input[type=range]{width:100%;accent-color:var(--accent);height:24px;}
+  .slider-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:2px;}
+  .slider-val{font-size:19px;font-weight:600;color:var(--accent);}
+  .slider-val small{font-size:12px;font-weight:500;color:var(--muted);}
+  .unit{display:flex;align-items:center;gap:8px;}
+  .unit input{flex:1;}
+  .unit span{color:var(--muted);font-size:14px;}
+  .info{display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;border-radius:50%;
+    background:var(--accent);color:#fff;font-size:10px;font-weight:700;font-style:italic;cursor:help;vertical-align:1px;}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .results{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px;}
+  .stat{background:#f7f9fb;border:1px solid var(--line);border-radius:10px;padding:10px 12px;}
+  .stat .k{font-size:11px;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);}
+  .stat .v{font-size:19px;font-weight:600;margin-top:2px;}
+  .stat.full{grid-column:1/-1;background:#eef6f1;border-color:#cfe6da;}
+  .stat.full .v{color:var(--accent2);font-size:23px;}
+  .badge{display:inline-block;font-size:12px;font-weight:600;padding:2px 9px;border-radius:20px;margin-top:2px;}
+  .badge.ok{background:#e6f4ec;color:#0f6e56;}
+  .badge.no{background:#fbecea;color:#c0563a;}
+  .note{font-size:12px;color:var(--muted);margin-top:14px;line-height:1.55;}
+  .note code{background:#eef1f4;padding:1px 5px;border-radius:5px;font-size:11.5px;}
+  #plot{width:100%;height:520px;}
+  .opt{font-size:12.5px;color:var(--muted);margin-top:10px;}
+  .opt b{color:var(--accent2);}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1><img src="favicon.svg" alt="" width="32" height="32" style="border-radius:7px;flex:none;" />Elevated Goal — Speed to Goal Simulator</h1>
+  <p class="sub">Maximise <b>time-point fraction</b> = speed&nbsp;fraction × goal-altitude&nbsp;factor on final glide to an elevated goal.
+    speed&nbsp;fraction = max(0, 1 − ⁶√((a−b)⁵/√b)); factor = 0.8→1.0 over the e-goal elevation. Valid only if you reach the goal (arrive ≥ 0 m). EN-C polar, climb-then-glide.<br><br>
+    <span style="font-size:12.5px;">E-goal reference: <a href="https://www.fai.org/sites/default/files/2026-05/CIVL-Plenary-2026-Annexe-41-SUI-1-Elevated-Goal-v2.pdf" target="_blank" rel="noopener">CIVL Plenary 2026, Swiss Proposal 01 (v2). →</a></span><br>
+    <span style="font-size:12.5px;">Scoring reference: <a href="https://www.fai.org/sites/default/files/2026-05/Sporting%20Code%20S7%20F%20-%20XC%20Scoring%202026_V1.0.pdf" target="_blank" rel="noopener">FAI Sporting Code S7 F — XC Scoring 2026 V1.0 →</a></span></p>
+
+  <div class="grid">
+    <div class="card">
+      <h2>Sliders</h2>
+
+      <div class="field">
+        <div class="slider-head">
+          <label for="spd" style="margin:0">Flying speed</label>
+          <span class="slider-val" id="spdOut">40 <small>km/h</small></span>
+        </div>
+        <input type="range" id="spd" min="28" max="55" step="0.5" value="40" />
+      </div>
+
+      <div class="field">
+        <div class="slider-head">
+          <label for="ther" style="margin:0">Time on last thermal</label>
+          <span class="slider-val" id="therOut">180 <small>s</small></span>
+        </div>
+        <input type="range" id="ther" min="0" max="600" step="5" value="180" />
+      </div>
+
+      <h2 style="margin-top:8px">Inputs</h2>
+      <div class="two">
+        <div class="field"><label for="egoal">E-goal height</label><div class="unit"><input type="number" id="egoal" value="200" step="10"><span>m</span></div></div>
+        <div class="field"><label for="start">Height before final glide</label><div class="unit"><input type="number" id="start" value="400" step="10"><span>m</span></div></div>
+        <div class="field"><label for="dist">Final glide distance</label><div class="unit"><input type="number" id="dist" value="5000" step="100"><span>m</span></div></div>
+        <div class="field"><label for="thstr">Last thermal strength</label><div class="unit"><input type="number" id="thstr" value="2.0" step="0.1"><span>m/s</span></div></div>
+        <div class="field"><label for="wind">Head wind <span class="info" tabindex="0" role="img" aria-label="Use a negative value for tail wind" title="Use a negative value for tail wind">i</span></label><div class="unit"><input type="number" id="wind" value="0" step="1"><span>km/h</span></div></div>
+        <div class="field"><label for="netto">Netto on final glide <span class="info" tabindex="0" role="img" aria-label="Air-mass vertical speed: positive = lifty (rising air), negative = sinky" title="Air-mass vertical speed: positive = lifty (rising air), negative = sinky">i</span></label><div class="unit"><input type="number" id="netto" value="0" step="0.1"><span>m/s</span></div></div>
+        <div class="field"><label for="flown">Task time before final glide</label><div class="unit"><input type="number" id="flown" value="65" step="1"><span>min</span></div></div>
+        <div class="field"><label for="best">Task time of first in goal</label><div class="unit"><input type="number" id="best" value="75" step="1"><span>min</span></div></div>
+      </div>
+
+      <h2 style="margin-top:8px">Result</h2>
+      <div class="results">
+        <div class="stat full"><div class="k">Time-point fraction (sf × gaf)</div><div class="v" id="rTPF">—</div></div>
+        <div class="stat"><div class="k">Speed fraction</div><div class="v" id="rSF">—</div></div>
+        <div class="stat"><div class="k">Goal-altitude factor</div><div class="v" id="rGAF">—</div></div>
+        <div class="stat"><div class="k">Arrival above goal</div><div class="v" id="rArr">—</div></div>
+        <div class="stat"><div class="k">Task time</div><div class="v" id="rA">—</div><div style="font-size:12px;color:var(--muted);margin-top:2px;">first in goal: <span id="rBest" style="font-weight:600;">—</span></div></div>
+      </div>
+      <p class="opt" id="optLine">—</p>
+    </div>
+
+    <div class="card">
+      <h2>Time-point-fraction surface</h2>
+      <div id="plot"></div>
+      <p class="note">
+        Red marker = your slider point; gold marker = the optimum (max time-point fraction). Time-point&nbsp;fraction =
+        speed&nbsp;fraction × goal-altitude&nbsp;factor. Speed&nbsp;fraction = <code>max(0, 1 − ⁶√((a−b)⁵/√b))</code>
+        (<code>a</code> = your task time, <code>b</code> = best task time, in <b>hours</b>). Goal-altitude factor =
+        <code>0.8 + 0.6·AR − 0.6·AR² + 0.2·AR³</code> (AR = arrival ÷ e-goal). The flat floor is where you arrive below goal
+        level and miss goal. Polar: <code>sink = 1.05 + 0.00778·(V−37)²</code> m/s (EN-C).
+      </p>
+    </div>
+    <p><a href="https://zinuzoid.github.io/flying/elevated-goal-simulator" target="_blank" rel="noopener">Basic goal-altitude simulator →</a></p>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/plotly.js/2.32.0/plotly.min.js"></script>
+<script>
+const $=id=>document.getElementById(id);
+const spd=$('spd'), ther=$('ther');
+const inputs=['egoal','start','dist','netto','wind','thstr','best','flown'].map($);
+const SPD_MIN=28, SPD_MAX=55, SPD_STEP=0.5;
+const THER_MIN=0, THER_MAX=600, THER_STEP=15;
+
+function sink(V){ return 1.05 + 0.00778*Math.pow(V-37,2); }      // EN-C, m/s
+function P(){ return {G:+$('egoal').value, H0:+$('start').value, D:+$('dist').value,
+  netto:+$('netto').value, wind:+$('wind').value, c:+$('thstr').value, bMin:+$('best').value, flown:+$('flown').value }; }
+
+function gaf(arr,E){ if(arr<=0)return 0.8; if(arr>=E)return 1; const ar=arr/E; return 0.8+0.6*ar-0.6*ar*ar+0.2*ar*ar*ar; }
+function point(V, tTh, p){
+  const vg=V-p.wind;                                // ground speed = airspeed − head wind (km/h)
+  if(vg<=0) return {arr:-Infinity,made:false,aSec:Infinity,gT:Infinity,sf:0,gaf:0.8,tpf:0};
+  const gT=p.D/(vg/3.6), eff=sink(V)-p.netto, hLost=eff*gT;   // sink uses airspeed; time uses ground speed
+  const arr=p.H0 + p.c*tTh - hLost;                 // arrival height ABOVE GOAL
+  const made=arr>=0;                                // reached the goal (≥0 m above goal)
+  const aSec=p.flown*60 + tTh + gT, aH=aSec/3600, bH=p.bMin/60;   // a, b in HOURS
+  let sf;
+  if(aH<=bH) sf=1;
+  else { const r=Math.pow(aH-bH,5)/Math.sqrt(bH); sf=Math.max(0,1-Math.pow(r,1/6)); }
+  const f=gaf(arr,p.G);                             // goal-altitude factor over e-goal elevation
+  return {arr,made,aSec,gT,sf,gaf:f,tpf:made?sf*f:0};   // time-point fraction = sf × gaf
+}
+function mmss(s){ s=Math.max(0,Math.round(s)); const m=Math.floor(s/60); return m+':'+String(s%60).padStart(2,'0'); }
+
+function findOpt(p){
+  let best=null;
+  for(let V=SPD_MIN; V<=SPD_MAX; V+=0.25){
+    for(let t=THER_MIN; t<=THER_MAX; t+=5){
+      const pt=point(V,t,p);
+      if(!pt.made) continue;
+      if(best===null || pt.tpf>best.tpf) best={V,tTh:t,...pt};
+    }
+  }
+  return best;
+}
+
+function buildSurface(){
+  const p=P();
+  const xs=[], ys=[];
+  for(let V=SPD_MIN; V<=SPD_MAX+1e-9; V+=SPD_STEP) xs.push(+V.toFixed(2));
+  for(let t=THER_MIN; t<=THER_MAX+1e-9; t+=THER_STEP) ys.push(t);
+  const z=ys.map(t=>xs.map(V=>+point(V,t,p).tpf.toFixed(3)));
+  const surface={type:'surface',x:xs,y:ys,z,colorscale:'Viridis',showscale:true,
+    colorbar:{title:{text:'tpf',side:'right'},thickness:12,len:.7},
+    contours:{z:{show:true,usecolormap:true,project:{z:true}}},
+    hovertemplate:'Speed %{x:.0f} km/h<br>Thermal %{y:.0f} s<br>TP frac %{z:.3f}<extra></extra>'};
+  const opt=findOpt(p);
+  const optMk = opt ? {type:'scatter3d',mode:'markers',name:'optimum',
+    x:[opt.V],y:[opt.tTh],z:[opt.tpf],marker:{size:6,color:'#e0a92e',symbol:'diamond',line:{color:'#7a5a10',width:1}},
+    hovertemplate:'Optimum<br>%{x:.1f} km/h, %{y:.0f}s<br>tpf %{z:.3f}<extra></extra>'} : null;
+  const cur=curMarker(p);
+  const data=[surface]; if(optMk) data.push(optMk); data.push(cur.stem, cur.dot);
+  window.__idx={stem:data.indexOf(cur.stem), dot:data.indexOf(cur.dot)};
+  const layout={margin:{l:0,r:0,t:20,b:0},height:520,paper_bgcolor:'rgba(0,0,0,0)',
+    scene:{xaxis:{title:'Flying speed (km/h)'},yaxis:{title:'Thermal time (s)'},
+      zaxis:{title:'Time-point fraction',range:[0,1]},
+      annotations:annos(p,opt),
+      camera: window.__cam || {eye:{x:-1.5,y:-1.6,z:1.4}}},
+    showlegend:false};
+  Plotly.react('plot',data,layout,{displayModeBar:false,responsive:true});
+  const gd=$('plot');
+  if(!gd.__camHooked){ gd.__camHooked=true;
+    gd.on('plotly_relayout', e=>{ if(e && e['scene.camera']) window.__cam=e['scene.camera']; }); }
+  return opt;
+}
+function anno(x,y,z,text,color){
+  return {x,y,z,ax:0,ay:-46,text:'',showarrow:true,arrowhead:2,arrowsize:1.3,arrowwidth:3,arrowcolor:color};
+}
+function annos(p,opt){
+  const V=+spd.value, t=+ther.value, cz=point(V,t,p).tpf;
+  const a=[anno(V,t,isFinite(cz)?cz:0,'You','#c0563a')];
+  if(opt) a.push(anno(opt.V,opt.tTh,opt.tpf,'Optimum','#b9860b'));
+  return a;
+}
+function curMarker(p){
+  const V=+spd.value, t=+ther.value, pt=point(V,t,p);
+  const stem={type:'scatter3d',mode:'lines',x:[V,V],y:[t,t],z:[0,pt.tpf],
+    line:{color:'#c0563a',width:4},hoverinfo:'skip'};
+  const dot={type:'scatter3d',mode:'markers',x:[V],y:[t],z:[pt.tpf],
+    marker:{size:6,color:'#c0563a',line:{color:'#7a2b18',width:1}},
+    hovertemplate:'You<br>%{x:.1f} km/h, %{y:.0f}s<br>tpf %{z:.3f}<extra></extra>'};
+  return {stem,dot,pt};
+}
+
+function readouts(opt){
+  const p=P(), V=+spd.value, t=+ther.value, pt=point(V,t,p);
+  spd.title=''; $('spdOut').innerHTML=(+V).toFixed(1)+' <small>km/h</small>';
+  $('therOut').innerHTML=t+' <small>s ('+mmss(t)+')</small>';
+  $('rTPF').textContent = pt.made ? pt.tpf.toFixed(3) : '0.000 (no goal)';
+  $('rSF').textContent=pt.sf.toFixed(3);
+  $('rGAF').textContent=pt.gaf.toFixed(3);
+  $('rArr').textContent=Math.round(pt.arr)+' m';
+  $('rA').textContent=mmss(pt.aSec);
+  $('rBest').textContent=mmss(p.bMin*60);
+  $('optLine').innerHTML = opt
+    ? 'Optimum: fly <b>'+opt.V.toFixed(1)+' km/h</b>, climb <b>'+Math.round(opt.tTh)+' s</b> ('+mmss(opt.tTh)+') → arrive <b>'+Math.round(opt.arr)+' m</b> above goal (sf '+opt.sf.toFixed(3)+' × gaf '+opt.gaf.toFixed(3)+') → tp fraction <b>'+opt.tpf.toFixed(3)+'</b>.'
+    : 'No goal-making solution within the slider ranges for these inputs.';
+}
+
+function updateMarker(){
+  const p=P(); const cur=curMarker(p);
+  if(window.__idx){
+    Plotly.restyle('plot',{x:[cur.stem.x],y:[cur.stem.y],z:[cur.stem.z]},[window.__idx.stem]);
+    Plotly.restyle('plot',{x:[cur.dot.x],y:[cur.dot.y],z:[cur.dot.z]},[window.__idx.dot]);
+    Plotly.relayout('plot',{'scene.annotations':annos(p,window.__opt)});
+  }
+  readouts(window.__opt);
+}
+function rebuild(){ window.__opt=buildSurface(); readouts(window.__opt); }
+
+let gaTimer;
+function track(name){
+  clearTimeout(gaTimer);
+  gaTimer=setTimeout(()=>{ if(typeof gtag==='function'){
+    gtag('event',name,{event_category:'engagement',flying_speed:+spd.value,thermal_time:+ther.value}); }},600);
+}
+
+rebuild();
+spd.addEventListener('input',()=>{updateMarker();track('slider_move');});
+ther.addEventListener('input',()=>{updateMarker();track('slider_move');});
+inputs.forEach(el=>el.addEventListener('input',rebuild));
+</script>
+</body>
+</html>
