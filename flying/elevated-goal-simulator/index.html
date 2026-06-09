@@ -57,6 +57,10 @@
   .note{font-size:12px;color:var(--muted);margin-top:14px;line-height:1.55;}
   .note code{background:#eef1f4;padding:1px 5px;border-radius:5px;font-size:11.5px;}
   .toprow{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .footer{margin-top:28px;padding:16px 2px 4px;border-top:1px solid var(--line);}
+  .footer .credits{display:flex;align-items:center;justify-content:flex-end;gap:8px;color:var(--muted);font-size:13px;flex-wrap:wrap;}
+  .footer .heart{color:#e0485a;}
+  .footer img{vertical-align:middle;}
 </style>
 </head>
 <body>
@@ -130,6 +134,12 @@
     </div>
     <p><a href="https://zinuzoid.github.io/flying/elevated-goal-speed-simulator" target="_blank" rel="noopener">Speed-to-E-goal simulator →</a></p>
   </div>
+  <footer class="footer">
+    <div class="credits">
+      <span class="copyright">&copy; <span class="footYear"></span>, made with <span class="heart">&hearts;</span> by JET - ArmchairPilot</span>
+      <img src="armchairpilot-logo.png" alt="ArmchairPilot" width="64" onerror="this.style.display='none'" />
+    </div>
+  </footer>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
@@ -260,6 +270,7 @@ arr.addEventListener('input',update);
 arr.addEventListener('input',trackSlider);
 [tp,dp,lp].forEach(el=>el.addEventListener('input',update));
 elev.addEventListener('input',rebuild);
+document.querySelectorAll('.footYear').forEach(e=>e.textContent=new Date().getFullYear());
 </script>
 </body>
 </html>
